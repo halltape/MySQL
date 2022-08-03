@@ -68,7 +68,7 @@ GROUP BY name, number_plate, violation
 HAVING COUNT(*) >= 2
 ORDER BY name, number_plate, violation ASC;
 /*==================================================================================*/
-                                    /*STEPIK(1.)#5*/
+                                    /*STEPIK(1.7)#5*/
 SELECT
     name,
     number_plate,
