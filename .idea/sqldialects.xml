@@ -2,6 +2,6 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/Stepik_1.6.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/requests.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/Stepik_1.7.sql" dialect="MySQL" />
   </component>
 </project>
