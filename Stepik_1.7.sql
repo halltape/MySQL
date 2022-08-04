@@ -64,6 +64,12 @@ UPDATE fine AS f
 SET f.sum_fine = f.sum_fine / 8
 WHERE f.fine_id IN(6,7);
 
+UPDATE fine
+SET fine.sum_fine = CASE fine_id
+    WHEN 4 THEN 250
+    WHEN 8 THEN 500
+ELSE fine.sum_fine END;
+
 /*==================================================================================*/
                                     /*MAIN QUERIES */
 SELECT * FROM fine;
@@ -73,7 +79,6 @@ DROP TABLE traffic_violation;
 
 /*==================================================================================*/
                                     /*STEPIK(1.7)#3*/
-
 UPDATE fine AS f, traffic_violation AS tv
 SET f.sum_fine = tv.sum_fine
 WHERE f.sum_fine IS NULL AND f.violation = tv.violation;
@@ -88,6 +93,7 @@ FROM fine
 GROUP BY name, number_plate, violation
 HAVING COUNT(*) >= 2
 ORDER BY name, number_plate, violation ASC;
+
 /*==================================================================================*/
                                     /*STEPIK(1.7)#5*/
 UPDATE fine AS f,
@@ -105,6 +111,28 @@ WHERE query_in.violation = f.violation AND
         query_in.name = f.name AND
         query_in.number_plate = f.number_plate AND
     f.date_payment IS NULL;
+
 /*==================================================================================*/
                                     /*STEPIK(1.7)#6*/
+UPDATE fine, payment
+SET fine.date_payment = payment.date_payment,
+    fine.sum_fine = IF(DATEDIFF(payment.date_payment, payment.date_violation) <=20,
+        fine.sum_fine / 2, fine.sum_fine)
+WHERE fine.name = payment.name AND
+      fine.number_plate = payment.number_plate AND
+      fine.violation = payment.violation AND
+      fine.date_payment IS NULL;
 
+/*==================================================================================*/
+                                    /*STEPIK(1.7)#7*/
+CREATE TABLE back_payment AS
+    SELECT name, number_plate, violation, sum_fine, date_violation
+    FROM fine
+WHERE date_payment IS NULL;
+
+SELECT * FROM back_payment;
+
+/*==================================================================================*/
+                                    /*STEPIK(1.7)#7*/
+DELETE FROM fine
+WHERE DATEDIFF(date_violation, '2020-02-01') < 0;
