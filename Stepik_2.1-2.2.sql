@@ -27,13 +27,16 @@ DROP TABLE book;
 
 /*==================================================================================*/
                                 /*CORRECTING MISTAKES */
-DELETE FROM book
-WHERE book_id = 1;
+DELETE FROM genre
+WHERE genre_id IN(3,4);
 
-INSERT INTO genre(name_genre)
+UPDATE genre
+SET genre_id = 3
+WHERE genre_id = 5;
+
+INSERT INTO author(name_author)
 VALUES
-    ('Роман'),
-    ('Поэзия');
+    ('Лермонтов М.Ю.');
 
 /*==================================================================================*/
                                     /*STEPIK(2.1)#3*/
@@ -71,5 +74,42 @@ VALUES
     ('Стихотворения и поэмы', 3, 2, 650.00, 15),
     ('Черный человек', 3, 2, 570.20, 6),
     ('Лирика', 4, 2, 518.99, 2);
+
 /*==================================================================================*/
                                 /*STEPIK(2.2)#1*/
+SELECT
+    title,
+    name_genre,
+    price
+FROM
+    genre INNER JOIN book
+ON genre.genre_id = book.genre_id
+WHERE book.amount > 8
+ORDER BY price DESC;
+
+/*==================================================================================*/
+                                /*STEPIK(2.2)#2*/
+SELECT
+    name_genre
+FROM genre LEFT JOIN book
+ON genre.genre_id = book.genre_id
+WHERE title IS NULL;
+
+/*==================================================================================*/
+                                /*STEPIK(2.2)#3*/
+CREATE TABLE city(
+    city_id INT PRIMARY KEY AUTO_INCREMENT,
+    name_city VARCHAR(30)
+);
+INSERT INTO city(name_city)
+VALUES
+    ('Москва'),
+    ('Санкт-Петербург'),
+    ('Владивосток');
+SELECT * FROM city;
+
+SELECT
+    city,
+    name_author,
+    date AS 'Дата'
+FROM
