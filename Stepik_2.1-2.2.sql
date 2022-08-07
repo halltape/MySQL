@@ -130,3 +130,14 @@ ORDER BY title ASC;
 
 /*==================================================================================*/
                                 /*STEPIK(2.2)#5*/
+SELECT
+    name_author,
+    sum(amount) AS 'Количество'
+FROM book
+    RIGHT JOIN author on author.author_id = book.author_id
+    GROUP BY name_author
+    HAVING sum(amount) < 10 OR sum(amount) IS NULL
+    ORDER BY Количество ASC;
+
+/*==================================================================================*/
+                                /*STEPIK(2.2)#6*/
