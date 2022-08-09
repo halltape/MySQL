@@ -141,3 +141,85 @@ FROM book
 
 /*==================================================================================*/
                                 /*STEPIK(2.2)#6*/
+UPDATE book
+SET book.genre_id = CASE book.book_id
+    WHEN 7 THEN 1
+    WHEN 2 THEN 3
+ELSE book.genre_id END;
+
+SELECT
+    name_author
+FROM book
+    INNER JOIN author on author.author_id = book.author_id
+    INNER JOIN genre on genre.genre_id = book.genre_id
+    GROUP BY name_author
+HAVING COUNT(DISTINCT(genre.name_genre)) = 1
+ORDER BY name_author ASC;
+
+/*==================================================================================*/
+                                /*STEPIK(2.2)#7*/
+UPDATE book
+SET book.amount = CASE book.book_id
+    WHEN 8 THEN 10
+ELSE book.amount END;
+
+INSERT INTO book(book.title, book.author_id, book.genre_id, book.price, book.amount)
+VALUES
+    ('Герой нашего времени', 5, 3, 570.99, 2),
+    ('Доктор Живаго', 4, 3, 740.50, 5);
+
+SELECT
+    title,
+    name_author,
+    name_genre,
+    price,
+    amount
+FROM book
+    INNER JOIN author on author.author_id = book.author_id
+    INNER JOIN genre on genre.genre_id = book.genre_id
+WHERE genre.genre_id IN
+    (
+    SELECT query_in_1.genre_id
+    FROM
+        ( /* выбираем код жанра и количество произведений, относящихся к нему */
+            SELECT genre_id, SUM(amount) AS sum_amount
+            FROM book
+            GROUP BY genre_id
+        )query_in_1
+            INNER JOIN
+        ( /* выбираем запись, в которой указан код жанр с максимальным количеством книг */
+            SELECT genre_id, SUM(amount) AS sum_amount
+            FROM book
+            GROUP BY genre_id
+            ORDER BY sum_amount DESC
+            LIMIT 1
+        ) query_in_2
+        ON query_in_1.sum_amount= query_in_2.sum_amount
+        )
+    ORDER BY title ASC;
+/*==================================================================================*/
+                                /*STEPIK(2.2)#8*/
+CREATE TABLE supply(
+    supply_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(50),
+    author VARCHAR(50),
+    price DECIMAL(8,2),
+    amount DECIMAL(8,2)
+);
+INSERT INTO supply(title, author, price, amount)
+VALUES
+    ('Доктор Живаго', 'Пастернак Б.Л.', 618.99, 3),
+    ('Черный человек', 'Есенин С.А.', 570.20, 6),
+    ('Евгений Онегин', 'Пушкин А.С.', 440.80, 5),
+    ('Идиот', 'Достоевский Ф.М.', 360.80, 3);
+
+SELECT
+    book.title AS 'Название',
+    name_author AS 'Автор',
+    SUM(book.amount + supply.amount) AS 'Количество'
+FROM author
+    INNER JOIN book USING(author_id)
+    INNER JOIN supply on supply.author = author.name_author
+WHERE book.price = supply.price;
+/*==================================================================================*/
+                                /*STEPIK(2.3)#1*/
